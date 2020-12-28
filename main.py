@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import pathlib
 
 bot = commands.Bot(command_prefix='!', description="What")
 
@@ -57,5 +58,5 @@ async def on_ready():
     finally:
         await bot.logout()
 
-with open('token.conf', 'r') as f:
+with open(pathlib.Path(__file__).parent.joinpath('token.conf').absolute(), 'r') as f:
     bot.run(f.read())
