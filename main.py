@@ -57,4 +57,5 @@ async def on_ready():
     finally:
         await bot.logout()
 
-bot.run('NzkzMDY2OTA0ODM4NDcxNzIw.X-m3HA._lZjuwj_DbXt0dICQCbERUEea38')
+with open('token.conf', 'r') as f:
+    bot.run(f.read())
