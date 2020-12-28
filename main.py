@@ -7,7 +7,7 @@ bot = commands.Bot(command_prefix='!', description="What")
 
 def write_in_channel(str):
     return {
-        "717074975923634188": {
+        "717064505762381876": {
             "description": """
 Kære kammerater!
 
