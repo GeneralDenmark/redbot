@@ -19,9 +19,6 @@ Hvad i betaler, er op til jer, hvad end i kan udvære.
 Overfør pengende til Mobile pay boksen:
 https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA
 
-Skriv jeres navn i kommentarfeltet,
-
-
 og fortsæt den gode kamp!
 
 Kærligst LAG-gruppen
@@ -30,7 +27,8 @@ Kærligst LAG-gruppen
             "title": 'Det er tid til at betale kontigent!',
             'color': discord.Color.red(),
             'image': 'https://dkp.dk/wp-content/uploads/2017/09/logohammerogsegl.png',
-            'url': 'https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA'
+            'url': 'https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA',
+            'ping': '715197071950348288'
         },
     }.get(str, None)
 
@@ -49,6 +47,10 @@ async def on_ready():
                         if type(msg) == str:
                             await channel.send(msg)
                         else:
+                            if msg.get('ping', None) is not None:
+                                role: discord.Role = guild.get_role(role_id=msg.get('ping'))
+                                if role.mentionable:
+                                    await channel.send('{}'.format(role.mention))
                             embed = discord.Embed(**msg)
                             if msg.get('image', None) is not None:
                                 embed.set_image(url=msg.get('image'))
