@@ -1,0 +1,5 @@
+entity-packages: ungkom.org.domai.domain
+transactional-packages: ungkom.org.transactional
+querybean-packages: ungkom.org.domai.domain
+profile-location: true
+

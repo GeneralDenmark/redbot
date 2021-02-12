@@ -1,0 +1,15 @@
+version: '3.2'
+
+services:
+  postgresql:
+    image: postgres
+    container_name: postgresql
+    environment:
+      - POSTGRES_USER=roedfront
+      - POSTGRES_PASSWORD=verysecretpasswordnooneknows
+      - POSTGRES_DB=roedfront
+    volumes:
+      - /home/agw/aau/sdrp/infile:/infile
+      - /home/agw/aau/sdrp/data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"

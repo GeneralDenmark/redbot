@@ -1,0 +1,21 @@
+
+datasource:
+  db:
+    username: xxx
+    password: xxx
+    url: jdbc:postgresql://localhost:5432/xxx
+    driver: org.postgresql.Driver
+#  db:
+#    username: sa
+#    password: sa
+#    url: jdbc:h2:mem:myapp
+#    driver: org.h2.Driver
+
+ebean:
+  migration:
+   run: true
+#
+#  docstore:
+#    url: http://127.0.0.1:9200
+#    active: true
+
