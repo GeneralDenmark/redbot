@@ -10,10 +10,10 @@ import java.awt.Color
 class EmbedDiscord : Job {
     override fun execute(context: JobExecutionContext?) {
         val bot: JDA = Bot.bot
-        val channel = bot.getTextChannelById(712992022272933929)
+        val channel = bot.getTextChannelById(717064505762381876)
         if (channel != null) {
             if (channel.canTalk()) {
-                val pingRole = bot.getRoleById(712992134088884294)
+                val pingRole = bot.getRoleById(715197071950348288)
                 channel.sendMessage("${pingRole?.asMention}").queue()
                 val embed: EmbedBuilder = EmbedBuilder()
                 embed.setTitle("Det er tid til at betale kontigent!", "https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA")

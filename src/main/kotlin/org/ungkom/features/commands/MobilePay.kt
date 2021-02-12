@@ -6,16 +6,19 @@ import java.awt.Color
 import net.dv8tion.jda.api.Permission;
 import com.jagrosh.jdautilities.command.CommandEvent
 import net.dv8tion.jda.api.EmbedBuilder
+import org.ungkom.utils.checkPermissions
 
 
 class MobilePay : Command() {
     init {
-        name = "mobile_pay"
+        category = Category("Information")
+        name = "mobilepay"
         help = "Viser mobile pay linket samt QR-koden"
         botPermissions = arrayOf(Permission.MESSAGE_EMBED_LINKS)
-        guildOnly = false
     }
     override fun execute(event: CommandEvent) {
+        if(0 > checkPermissions(event, null,true)) return
+
         val embed: EmbedBuilder = EmbedBuilder()
         embed.setTitle("Betaling af kontigent", "https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA")
         embed.setColor(Color.RED)

@@ -1,5 +1,6 @@
 package org.ungkom
 
+import com.google.gson.Gson
 import org.quartz.Job
 import org.quartz.JobExecutionContext
 import org.ungkom.domain.Guild
@@ -9,14 +10,29 @@ import org.ungkom.domain.query.QGuild
 import org.ungkom.domain.query.QMember
 import org.ungkom.domain.query.QRelGuildMember
 import org.ungkom.utils.Bot
+import org.ungkom.utils.Config
 import org.ungkom.utils.Scheduler
+import org.ungkom.utils.getResourcesFile
 import org.ungkom.utils.jobs.EmbedDiscord
+import java.io.BufferedReader
+import java.io.File
+import java.security.InvalidParameterException
 
 fun main() {
+    val gson = Gson()
+    val bufferReader: BufferedReader = File(getResourcesFile("config.json")).bufferedReader()
+    val inputString = bufferReader.use {it.readText()}
+
+    val config = gson.fromJson(inputString, Config::class.java)
+
+    if (config.token == null) throw InvalidParameterException("Require token to run bot")
+    if (config.owner == null) throw InvalidParameterException("Require owner to run bot")
+
+
     val bot = Bot(
-        "xxx",
-        "xxx",
-            "xxx"
+        config.token!!,
+        config.owner!!,
+        "!",
         )
     bot.buildBot()
 
@@ -43,81 +59,3 @@ fun main() {
     val testTime = "*/5 * * * * ?"
     sc.createNewJob(EmbedDiscord().javaClass, "Test", realTime)
 }
-
-
-
-
-
-
-
-
-
-/*
-
-    bot(token) {
-        prefix {
-            "!"
-        }
-
-        configure {
-            allowMentionPrefix = true
-            generateCommandDocs = false
-            showStartupLog = true
-            recommendCommands = false
-            commandReaction = null
-            theme = Color.RED
-        }
-
-        mentionEmbed {
-            title = "RødFront bot"
-            description = "Ping mig én gang til, _I dare you_\n\n Skriv `!hjælp` for at få mine kommandoer."
-            color = it.discord.configuration.theme
-            }
-        permissions {
-            true
-        }
-        presence {
-            watching("Marxisme og Leninisme")
-        }
-        intents {
-            +Intent.GuildMessages
-            +Intent.DirectMessageTyping
-            +Intent.DirectMessages
-            +Intent.DirectMessagesReactions
-            +Intent.GuildBans
-            +Intent.GuildEmojis
-            +Intent.GuildInvites
-            +Intent.GuildMessageTyping
-            +Intent.GuildMessageReactions
-        }
-        onStart {
-            api.guilds.toList().forEach { it ->
-                var members: MutableList<Member> = emptyList<Member>().toMutableList()
-                var guild: Guild;
-                if (!QGuild().discord_id.equalTo(it.id.value).exists()) {
-                    guild = Guild(it.id.value)
-                    guild.save()
-                    it.members.toList().forEach { th ->
-                        val m = QMember().discord_id.equalTo(th.id.value).findOne() ?: Member(th.id.value)
-                        m.save()
-                        members.add(m)
-                    }
-
-                } else {
-                    guild = QGuild().discord_id.equalTo(it.id.value).findOne() ?: throw Exception()
-                    it.members.toList().forEach{ th ->
-                        val m = QMember().discord_id.equalTo(th.id.value).findOne() ?: Member(th.id.value)
-                        m.save()
-                        members.add(m)
-                    }
-                }
-                members.forEach{ bob ->
-                        try {
-                            val t = RelGuildMember(guild, bob)
-                            t.save()
-                        } catch (ignored: Exception) { }
-                }
-            }
-        }
-    }
-}*/

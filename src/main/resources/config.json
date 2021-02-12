@@ -1,3 +1,7 @@
 {
-  "owner": ""
+  "owner": "Insert owner here",
+  "subOwners": [
+    ""
+  ],
+  "token": "Insert Token here"
 }

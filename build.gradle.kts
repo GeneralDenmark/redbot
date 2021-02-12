@@ -29,6 +29,7 @@ dependencies {
 
     implementation("io.ebean:ebean:12.3.2")
     implementation("io.ebean:ebean-querybean:12.2.3")
+    implementation("com.google.code.gson:gson:2.8.5")
     implementation("org.postgresql:postgresql:42.2.8")
     implementation("org.quartz-scheduler:quartz:2.3.2")
     kapt("io.ebean:kotlin-querybean-generator:12.2.3")

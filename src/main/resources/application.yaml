@@ -1,9 +1,9 @@
 
 datasource:
   db:
-    username: xxx
-    password: xxx
-    url: jdbc:postgresql://localhost:5432/xxx
+    username: ${dbuser}
+    password: ${dbpassword}
+    url: jdbc:postgresql://localhost:5432/${dbdb}
     driver: org.postgresql.Driver
 #  db:
 #    username: sa

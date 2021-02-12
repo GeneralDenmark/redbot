@@ -1,5 +1,6 @@
 package org.ungkom.utils
 
+import com.jagrosh.jdautilities.command.Command
 import com.jagrosh.jdautilities.command.CommandClientBuilder
 import com.jagrosh.jdautilities.commons.waiter.EventWaiter
 import com.jagrosh.jdautilities.examples.command.AboutCommand
@@ -13,7 +14,9 @@ import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.Activity
 import net.dv8tion.jda.api.requests.GatewayIntent
+import org.ungkom.features.commands.HelpMessage
 import org.ungkom.features.commands.MobilePay
+import org.ungkom.features.commands.Sherlock
 import org.ungkom.features.listeners.Listeners
 import java.awt.Color
 import java.util.EnumSet
@@ -24,6 +27,7 @@ import java.util.EnumSet
 class Bot(
         val token: String,
         val owner: String,
+        val prefix: String,
         vararg val values: String,
         val database: Database = DB.getDefault(),
 ) {
@@ -54,26 +58,21 @@ class Bot(
         client.setEmojis("\uD83D\uDE03", "\uD83D\uDE2E", "\uD83D\uDE26")
 
         // sets the bot prefix
-        client.setPrefix("!")
+        client.setPrefix(prefix)
 
-        // adds commands
-        client.addCommands( // command to show information about the bot
-            AboutCommand(
-                Color.RED,
-                "an example bot",
-                arrayOf("Cool commands", "Nice examples", "Lots of fun!"),
-                Permission.ADMINISTRATOR
-            ),
-            MobilePay(),  // command to make a random choice
-            // ChooseCommand(),  // command to say hello
-            // HelloCommand(waiter),  // command to check bot latency
-            PingCommand(),  // command to shut off the bot
-            ShutdownCommand()
+        val commands: ArrayList<Command> = arrayListOf(
+            MobilePay(),
+            Sherlock(),
         )
+        // adds commands
+        commands.forEach{
+            client.addCommand(it)
+        }
+        client.setHelpConsumer {HelpMessage(it, prefix, owner, commands)}
         // start getting a bot account set up
         val builder = JDABuilder.createDefault(token) // set the game for when the bot is loading
             .setStatus(OnlineStatus.DO_NOT_DISTURB)
-            .setActivity(Activity.playing("loading...")) // add the listeners
+            .setActivity(Activity.playing("indlæser...")) // add the listeners
             .setEnabledIntents(EnumSet.allOf(GatewayIntent::class.java))
             .addEventListeners(waiter, client.build()) // start it up!
         val jda = builder.build()
