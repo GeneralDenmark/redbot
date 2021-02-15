@@ -151,3 +151,4 @@ cython_debug/
 /.gradle/
 /gradle/
 /src/main/resources/sherlockoutputs/
+/.attach_pid*

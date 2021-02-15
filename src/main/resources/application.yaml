@@ -1,9 +1,9 @@
 
 datasource:
   db:
-    username: ${dbuser}
-    password: ${dbpassword}
-    url: jdbc:postgresql://localhost:5432/${dbdb}
+    username: roedfront
+    password: ${DB_password}
+    url: jdbc:postgresql://localhost:5432/roedfront
     driver: org.postgresql.Driver
 #  db:
 #    username: sa

@@ -56,6 +56,6 @@ fun main() {
 
     val sc = Scheduler()
     val realTime = "0 0 10 1 * ?"
-    val testTime = "*/5 * * * * ?"
+    // val testTime = "*/5 * * * * ?"
     sc.createNewJob(EmbedDiscord().javaClass, "Test", realTime)
 }
