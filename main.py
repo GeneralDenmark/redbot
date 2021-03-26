@@ -18,8 +18,6 @@ programmable_features: [Feature] = [
     InspiroBot
 ]
 
-
-
 args = argparse.ArgumentParser()
 required_args = args.add_argument_group(title='required arguments')
 required_args.add_argument('-m', '--message', required=True, help="The message to produce.")
@@ -61,15 +59,16 @@ async def on_ready():
                     if config['verbose']:
                         print(f"Found match :)")
                         if config['message'].endswith('.json'):
-                            SendEmbed(bot).execute(channel, config)
+                            await SendEmbed(bot, config).execute(channel)
                         else:
-                            await SendPlainMessage(bot).execute(channel, config)
+                            await SendPlainMessage(bot, config).execute(channel)
                         if config['bonus'] is not None:
                             for bonus in config['bonus']:
-                                await bonus(bot).execute(channel, config)
+                                await bonus(bot, config).execute(channel)
 
     finally:
         await bot.logout()
+
 
 if __name__ == '__main__':
 
@@ -77,4 +76,3 @@ if __name__ == '__main__':
         if config['verbose']:
             print('starting bot!!!')
         bot.run(f.read())
-

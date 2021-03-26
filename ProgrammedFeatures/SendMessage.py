@@ -7,12 +7,12 @@ from ProgrammedFeatures.ProgramFeatureClass import Feature
 
 
 class SendEmbed(Feature):
-    def __init__(self, bot):
-        super().__init__(bot)
+    def __init__(self, bot, config):
+        super().__init__(bot, config)
 
-    def execute(self, channel, config=None):
-        json_file = pathlib.Path(config['message'])
-        if not json_file.exists() and config['verbose']:
+    def execute(self, channel):
+        json_file = pathlib.Path(self.config['message'])
+        if not json_file.exists() and self.config['verbose']:
             raise Exception(f'No file exists with the name {json_file.absolute().__str__()}')
         with open(json_file, 'r') as file:
             embed_json: dict = json.load(file)
@@ -37,14 +37,14 @@ class SendEmbed(Feature):
 
 
 class SendPlainMessage(Feature):
-    def __init__(self, bot):
-        super().__init__(bot)
+    def __init__(self, bot, config):
+        super().__init__(bot, config)
 
-    async def _exec(self, channel: TextChannel, config=None):
-        await channel.send(config['message'])
+    async def _exec(self, channel: TextChannel):
+        await channel.send(self.config['message'])
 
-    def _dummy(self, channel, config=None):
-        print(f"Sends: {config['message']} to {channel}")
+    def _dummy(self, channel):
+        print(f"Sends: {self.config['message']} to {channel}")
 
     @staticmethod
     def _get_name():
