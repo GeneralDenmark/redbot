@@ -1,64 +1,80 @@
 import discord
 from discord.ext import commands
 import pathlib
+import subprocess
+import argparse
+import json
+from enum import Enum
+
+from ProgrammedFeatures import ProgramFeatureClass
+from ProgrammedFeatures.InspiroBot import InspiroBot
+from ProgrammedFeatures.ProgramFeatureClass import Feature
+from ProgrammedFeatures.SendMessage import SendEmbed, SendPlainMessage
+from utils import ProgrammedAction
 
 bot = commands.Bot(command_prefix='!', description="What")
 
+programmable_features: [Feature] = [
+    InspiroBot
+]
 
-def write_in_channel(str):
-    return {
-        "717064505762381876": {
-            "description": """
-Kære kammerater!
 
-Vi har brug for din støtte! 
-Hver måned er jeg blevet bedt om at sende denne besked ud til jer alle sammen, og pænt minde jer om at betale kontigent.
 
-Hvad i betaler, er op til jer, hvad end i kan udvære.
+args = argparse.ArgumentParser()
+required_args = args.add_argument_group(title='required arguments')
+required_args.add_argument('-m', '--message', required=True, help="The message to produce.")
+required_args.add_argument('-c', '--channel', nargs="+", required=True,
+                           help="The id for the channel to exec this in")
 
-Overfør pengende til Mobile pay boksen:
-https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA
+args.add_argument('-v', '--verbose', required=False, action='store_true',
+                  help="If the program is verbose or nutt")
 
-og fortsæt den gode kamp!
-
-Kærligst LAG-gruppen
-            """,
-            "footer": 'Denne besked er produceret af en automatisk Rød klient',
-            "title": 'Det er tid til at betale kontigent!',
-            'color': discord.Color.red(),
-            'image': 'https://dkp.dk/wp-content/uploads/2017/09/logohammerogsegl.png',
-            'url': 'https://mobilepay.dk/box?CWdpCOACfkVtEqLiFALfQxRhA',
-            'ping': '715197071950348288'
-        },
-    }.get(str, None)
+args.add_argument('-d', '--dummy', required=False, action='store_true',
+                  help="Executes everything but does not write in discord channel")
+args.add_argument('-g', '--guilds', required=False, nargs="+",
+                  help="What guilds to search for, can make the bot faster.")
+args.add_argument('-b', '--bonus', nargs='*', required=False, choices=programmable_features,
+                  action=ProgrammedAction, help="If the message should be supplied with preprogrammed features")
+config = args.parse_args()
+config = config.__dict__
+config['root'] = pathlib.Path(__file__).parent
+config['tmp_folder'] = pathlib.Path(config['root']).joinpath('tmp_folder')
 
 
 # Events
 @bot.event
 async def on_ready():
+    if config['verbose']:
+        print('Bot is ready!!! :)')
     guild: discord.Guild
     try:
         for guild in bot.guilds:
+            if config['guilds'] is not None and str(guild.id) not in config['guilds']:
+                if config['verbose']:
+                    print(f"guild ({guild.name}) not in ({config['guilds']})")
+                continue
             channel: discord.TextChannel
+            if config['verbose']:
+                print(f"In guild: {guild.name}")
             for channel in guild.channels:
-                if type(channel) == discord.TextChannel:
-                    msg = write_in_channel(str(channel.id))
-                    if msg is not None:
-                        if type(msg) == str:
-                            await channel.send(msg)
+                if type(channel) == discord.TextChannel and str(channel.id) in config['channel']:
+                    if config['verbose']:
+                        print(f"Found match :)")
+                        if config['message'].endswith('.json'):
+                            SendEmbed(bot).execute(channel, config)
                         else:
-                            if msg.get('ping', None) is not None:
-                                role: discord.Role = guild.get_role(role_id=msg.get('ping'))
-                                if role.mentionable:
-                                    await channel.send('{}'.format(role.mention))
-                            embed = discord.Embed(**msg)
-                            if msg.get('image', None) is not None:
-                                embed.set_image(url=msg.get('image'))
-                            if msg.get('footer', None) is not None:
-                                embed.set_footer(text=msg.get('footer'))
-                            await channel.send(embed=embed)
+                            await SendPlainMessage(bot).execute(channel, config)
+                        if config['bonus'] is not None:
+                            for bonus in config['bonus']:
+                                await bonus(bot).execute(channel, config)
+
     finally:
         await bot.logout()
 
-with open(pathlib.Path(__file__).parent.joinpath('token.conf').absolute(), 'r') as f:
-    bot.run(f.read())
+if __name__ == '__main__':
+
+    with open(config['root'].joinpath('token.conf').absolute(), 'r') as f:
+        if config['verbose']:
+            print('starting bot!!!')
+        bot.run(f.read())
+
