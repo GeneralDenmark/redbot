@@ -58,13 +58,13 @@ async def on_ready():
                 if type(channel) == discord.TextChannel and str(channel.id) in config['channel']:
                     if config['verbose']:
                         print(f"Found match :)")
-                        if config['message'].endswith('.json'):
-                            await SendEmbed(bot, config).execute(channel)
-                        else:
-                            await SendPlainMessage(bot, config).execute(channel)
-                        if config['bonus'] is not None:
-                            for bonus in config['bonus']:
-                                await bonus(bot, config).execute(channel)
+                    if config['message'].endswith('.json'):
+                        await SendEmbed(bot, config).execute(channel)
+                    else:
+                        await SendPlainMessage(bot, config).execute(channel)
+                    if config['bonus'] is not None:
+                        for bonus in config['bonus']:
+                            await bonus(bot, config).execute(channel)
 
     finally:
         await bot.logout()
