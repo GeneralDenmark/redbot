@@ -7,6 +7,11 @@ from ProgrammedFeatures.ProgramFeatureClass import Feature
 
 
 class SendEmbed(Feature):
+    """
+    Send a Discord Embed. Requires that the message is a path to a json file,
+    that contains the relevant information to generate a discord Embed.
+    """
+
     def __init__(self, bot, config):
         super().__init__(bot, config)
 
@@ -36,8 +41,17 @@ class SendEmbed(Feature):
     def _get_name():
         return 'SendEmbed'
 
+    @staticmethod
+    def _get_description():
+        return """
+Send a Discord Embed. Requires that the message is a path to a json file, 
+that contains the relevant information to generate a discord Embed.
+        """
+
 
 class SendPlainMessage(Feature):
+    """Just send what ever is in the message option as a message to the discord user."""
+
     def __init__(self, bot, config):
         super().__init__(bot, config)
 
@@ -50,3 +64,7 @@ class SendPlainMessage(Feature):
     @staticmethod
     def _get_name():
         return 'SendPlainMessage'
+
+    @staticmethod
+    def _get_description():
+        return """Just send what ever is in the message option as a message to the discord user."""

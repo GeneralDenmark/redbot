@@ -1,21 +1,18 @@
+import argparse
+import pathlib
+
 import discord
 from discord.ext import commands
-import pathlib
-import subprocess
-import argparse
-import json
-from enum import Enum
 
-from ProgrammedFeatures import ProgramFeatureClass
-from ProgrammedFeatures.InspiroBot import InspiroBot
+from ProgrammedFeatures.Inspiro import Inspiro
 from ProgrammedFeatures.ProgramFeatureClass import Feature
 from ProgrammedFeatures.SendMessage import SendEmbed, SendPlainMessage
-from utils import ProgrammedAction
+from utils import SelectProgrammableAction, DescribeProgrammableAction
 
 bot = commands.Bot(command_prefix='!', description="What")
 
 programmable_features: [Feature] = [
-    InspiroBot
+    Inspiro
 ]
 
 args = argparse.ArgumentParser()
@@ -32,7 +29,9 @@ args.add_argument('-d', '--dummy', required=False, action='store_true',
 args.add_argument('-g', '--guilds', required=False, nargs="+",
                   help="What guilds to search for, can make the bot faster.")
 args.add_argument('-b', '--bonus', nargs='*', required=False, choices=programmable_features,
-                  action=ProgrammedAction, help="If the message should be supplied with preprogrammed features")
+                  action=SelectProgrammableAction, help="If the message should be supplied with preprogrammed features")
+args.add_argument('--describe', required=False, action=DescribeProgrammableAction, choices=programmable_features,
+                  help="Describes the bonus features, and exit")
 config = args.parse_args()
 config = config.__dict__
 config['root'] = pathlib.Path(__file__).parent

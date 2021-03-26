@@ -1,10 +1,16 @@
 import subprocess
+
 from discord import File
 
 from ProgrammedFeatures.ProgramFeatureClass import Feature
 
 
-class InspiroBot(Feature):
+class Inspiro(Feature):
+    """
+    Inspiro, downloads a randomly generated inspirational poster from https://inspirobot.me/
+    and posts it.
+    """
+
     def __init__(self, bot, config):
         super().__init__(bot, config)
 
@@ -20,5 +26,11 @@ class InspiroBot(Feature):
         print(f"Sends file inspiro file")
 
     @staticmethod
+    def _get_description():
+        return """
+Inspiro, downloads a randomly generated inspirational poster from https://inspirobot.me/ and posts it.       
+        """
+
+    @staticmethod
     def _get_name():
-        return 'InspiroBot'
+        return 'Inspiro'
