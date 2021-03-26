@@ -10,9 +10,9 @@ class SendEmbed(Feature):
     def __init__(self, bot, config):
         super().__init__(bot, config)
 
-    def execute(self, channel):
+    async def execute(self, channel):
         json_file = pathlib.Path(self.config['message'])
-        if not json_file.exists() and self.config['verbose']:
+        if not json_file.exists():
             raise Exception(f'No file exists with the name {json_file.absolute().__str__()}')
         with open(json_file, 'r') as file:
             embed_json: dict = json.load(file)
@@ -24,6 +24,7 @@ class SendEmbed(Feature):
                 self.embed.set_footer(text=embed_json.get('footer'))
             if 'thumbnail' in embed_json.keys():
                 self.embed.set_thumbnail(url=embed_json.get('thumbnail'))
+        await super().execute(channel)
 
     async def _exec(self, channel: TextChannel, config=None):
         await channel.send(embed=self.embed)
