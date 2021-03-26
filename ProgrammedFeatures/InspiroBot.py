@@ -10,7 +10,7 @@ class InspiroBot(Feature):
 
     async def _exec(self, channel):
         subprocess.getoutput(
-            'curl "https://inspirobot.me/api?generate=true" | xargs curl -o ' + config['root'].joinpath(
+            'curl "https://inspirobot.me/api?generate=true" | xargs curl -o ' + self.config['tmp_folder'].joinpath(
                 'tmp.jpg').__str__())
         vvv = File(self.config['tmp_folder'].joinpath('tmp.jpg').__str__())
         await channel.send(file=vvv)
